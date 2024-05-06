@@ -1,10 +1,8 @@
 package com.jornada.socialnetwork.controller;
 
 
-
 import com.jornada.socialnetwork.dto.AutenticacaoDTO;
 import com.jornada.socialnetwork.dto.response.UsuarioResponseDTO;
-import com.jornada.socialnetwork.entity.UsuarioEntity;
 import com.jornada.socialnetwork.exceptions.BusinessException;
 import com.jornada.socialnetwork.service.UsuarioAutenticacaoService;
 import lombok.RequiredArgsConstructor;
