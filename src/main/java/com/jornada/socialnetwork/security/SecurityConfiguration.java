@@ -1,8 +1,10 @@
 package com.jornada.socialnetwork.security;
 
 
+import com.jornada.socialnetwork.service.UsuarioAutenticacaoService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +15,7 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -20,11 +23,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-//    private final UsuarioAutenticacaoService usuarioAutenticacaoService;
+    private final UsuarioAutenticacaoService usuarioAutenticacaoService;
 
-//    public SecurityConfiguration(@Lazy UsuarioAutenticacaoService usuarioAutenticacaoService) {
-//        this.usuarioAutenticacaoService = usuarioAutenticacaoService;
-//    }
+    public SecurityConfiguration(@Lazy UsuarioAutenticacaoService usuarioAutenticacaoService) {
+        this.usuarioAutenticacaoService = usuarioAutenticacaoService;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -43,7 +46,7 @@ public class SecurityConfiguration {
 
                         .anyRequest().authenticated()
         );
-//        http.addFilterBefore(new TokenAuthenticationFilter(usuarioAutenticacaoService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new TokenAuthenticationFilter(usuarioAutenticacaoService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

@@ -5,7 +5,7 @@
 -- Dumped from database version 16.1 (Debian 16.1-1.pgdg120+1)
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-05-06 09:31:23
+-- Started on 2024-05-06 14:37:49
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -663,8 +663,6 @@ ALTER SEQUENCE public.tipo_postagem_id_tipo_postagem_seq OWNED BY public.tipo_po
 CREATE TABLE public.usuario (
     id_usuario integer NOT NULL,
     nome text NOT NULL,
-    email text NOT NULL,
-    cpf text NOT NULL,
     qtd_seguindo integer DEFAULT 0 NOT NULL,
     qtd_seguidores integer DEFAULT 0 NOT NULL,
     bio text,
@@ -674,7 +672,8 @@ CREATE TABLE public.usuario (
     usuario character varying NOT NULL,
     qtd_postagens integer DEFAULT 0 NOT NULL,
     foto_perfil bytea,
-    email_visivel boolean DEFAULT true NOT NULL
+    email text NOT NULL,
+    ativo boolean DEFAULT true NOT NULL
 );
 
 
@@ -1127,7 +1126,9 @@ COPY public.tipo_postagem (id_tipo_postagem, descricao, ativo) FROM stdin;
 -- Data for Name: usuario; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.usuario (id_usuario, nome, email, cpf, qtd_seguindo, qtd_seguidores, bio, id_cidade, id_estado, senha, usuario, qtd_postagens, foto_perfil, email_visivel) FROM stdin;
+COPY public.usuario (id_usuario, nome, qtd_seguindo, qtd_seguidores, bio, id_cidade, id_estado, senha, usuario, qtd_postagens, foto_perfil, email, ativo) FROM stdin;
+1	admin	0	0	admin	\N	\N	$2a$10$nOhVe0aY5llDflD0YJUeXuMdmqhYXyZG3n90pB7c4ib0yRS0qBUPm	admin	0	\N	admin@teste.com	t
+2	user	0	0	user	\N	\N	$2a$10$9ojK0WqPzoTP626oYeQHWOYhTSeidVTK.Dcw1KUf9Iy8nL56XhS5i	user	0	\N	user@user.com	t
 \.
 
 
@@ -1168,6 +1169,8 @@ COPY public.usuario_habilidade (id_usuario, id_habilidade) FROM stdin;
 --
 
 COPY public.usuario_permissao (id_usuario, id_permissao) FROM stdin;
+1	1
+2	2
 \.
 
 
@@ -1276,7 +1279,7 @@ SELECT pg_catalog.setval('public.tipo_postagem_id_tipo_postagem_seq', 2, true);
 -- Name: usuario_id_usuario_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.usuario_id_usuario_seq', 1, false);
+SELECT pg_catalog.setval('public.usuario_id_usuario_seq', 2, true);
 
 
 --
@@ -1313,15 +1316,6 @@ ALTER TABLE ONLY public.contato
 
 ALTER TABLE ONLY public.databasechangeloglock
     ADD CONSTRAINT databasechangeloglock_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 3350 (class 2606 OID 40970)
--- Name: usuario email_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.usuario
-    ADD CONSTRAINT email_unique UNIQUE (email);
 
 
 --
@@ -1541,12 +1535,21 @@ ALTER TABLE ONLY public.usuario_permissao
 
 
 --
--- TOC entry 3352 (class 2606 OID 40990)
+-- TOC entry 3350 (class 2606 OID 40990)
 -- Name: usuario usuario_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.usuario
     ADD CONSTRAINT usuario_pk PRIMARY KEY (id_usuario);
+
+
+--
+-- TOC entry 3352 (class 2606 OID 41794)
+-- Name: usuario usuario_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuario
+    ADD CONSTRAINT usuario_unique UNIQUE (email);
 
 
 --
@@ -1846,7 +1849,7 @@ ALTER TABLE ONLY public.usuario_permissao
     ADD CONSTRAINT usuario_permissao_usuario_fk FOREIGN KEY (id_usuario) REFERENCES public.usuario(id_usuario);
 
 
--- Completed on 2024-05-06 09:31:23
+-- Completed on 2024-05-06 14:37:49
 
 --
 -- PostgreSQL database dump complete
