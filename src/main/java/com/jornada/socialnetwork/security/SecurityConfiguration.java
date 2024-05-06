@@ -36,15 +36,16 @@ public class SecurityConfiguration {
         http.headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
         http.authorizeHttpRequests((authz) -> authz
 
-                        .requestMatchers("/autenticacao/**").permitAll()
+                .requestMatchers("/autenticacao/**").permitAll()
+                .requestMatchers("/usuario/create").permitAll()
 
-                        .requestMatchers("/empresa/**").hasAnyRole("ADMIN", "EMPRESA")
-                        .requestMatchers("/personal/**").hasAnyRole("ADMIN", "EMPRESA")
-                        .requestMatchers("/aluno/**").hasAnyRole("ADMIN", "EMPRESA", "PERSONAL")
+                .requestMatchers("/empresa/**").hasAnyRole("ADMIN", "EMPRESA")
+                .requestMatchers("/personal/**").hasAnyRole("ADMIN", "EMPRESA")
+                .requestMatchers("/aluno/**").hasAnyRole("ADMIN", "EMPRESA", "PERSONAL")
 
-                        .requestMatchers("/**").hasRole("ADMIN")
+                .requestMatchers("/**").hasRole("ADMIN")
 
-                        .anyRequest().authenticated()
+                .anyRequest().authenticated()
         );
         http.addFilterBefore(new TokenAuthenticationFilter(usuarioAutenticacaoService), UsernamePasswordAuthenticationFilter.class);
 

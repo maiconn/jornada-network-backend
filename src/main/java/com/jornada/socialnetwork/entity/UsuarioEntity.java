@@ -20,11 +20,11 @@ public class UsuarioEntity implements UserDetails {
     private String nome;
     private String email;
     @Column(name = "qtd_seguindo")
-    private Long qtdSeguindo;
+    private Long qtdSeguindo = 0L;
     @Column(name = "qtd_seguidores")
-    private Long qtdSeguidores;
+    private Long qtdSeguidores = 0L;
     @Column(name = "qtd_postagens")
-    private Long qtdPostagens;
+    private Long qtdPostagens = 0L;
     private String bio;
     @Column(name = "id_cidade")
     private Integer idCidade;
@@ -32,7 +32,7 @@ public class UsuarioEntity implements UserDetails {
     private Integer idEstado;
     @Column(name = "foto_perfil")
     private byte[] fotoPerfil;
-    private Boolean ativo;
+    private Boolean ativo = Boolean.TRUE;
     private String senha;
     private String usuario;
 
