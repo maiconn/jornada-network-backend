@@ -125,7 +125,7 @@ public class UsuarioAutenticacaoService {
         return mapper.toDto(entity);
     }
 
-    private UsuarioEntity retornarUsuarioLogadoEntity() throws BusinessException {
+    public UsuarioEntity retornarUsuarioLogadoEntity() throws BusinessException {
         return repository.findById(getIdLoggedUser())
                 .orElseThrow(() ->
                         new BusinessException("Usuário não encontrado!"));

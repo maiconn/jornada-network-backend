@@ -11,7 +11,8 @@ import java.util.Set;
 
 @Getter
 @Setter
-@Entity(name = "usuario")
+@Entity
+@Table(name = "usuario")
 public class UsuarioEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -36,11 +37,17 @@ public class UsuarioEntity implements UserDetails {
     private String senha;
     private String usuario;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_permissao",
             joinColumns = @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_permissao", referencedColumnName = "id_permissao"))
     private Set<PermissaoEntity> permissoes;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UsuarioContatoEntity> contatos;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UsuarioHabilidadeEntity> habilidades;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

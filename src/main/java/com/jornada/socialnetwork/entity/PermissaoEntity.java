@@ -17,9 +17,10 @@ public class PermissaoEntity implements GrantedAuthority {
     @Id
     @Column(name = "id_permissao")
     private Long idPermissao;
+
+    @Column(name = "nome")
     private String nome;
 
-    @JsonIgnore
     @ManyToMany(mappedBy = "permissoes")
     private Set<UsuarioEntity> usuarios;
 

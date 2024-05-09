@@ -37,11 +37,11 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests((authz) -> authz
 
                 .requestMatchers("/autenticacao/**").permitAll()
-                .requestMatchers("/usuario/create").permitAll()
+                .requestMatchers("/usuario/**").permitAll()
 
-                .requestMatchers("/empresa/**").hasAnyRole("ADMIN", "EMPRESA")
-                .requestMatchers("/personal/**").hasAnyRole("ADMIN", "EMPRESA")
-                .requestMatchers("/aluno/**").hasAnyRole("ADMIN", "EMPRESA", "PERSONAL")
+                .requestMatchers("/habilidade/**").authenticated()
+                .requestMatchers("/contato/**").authenticated()
+
 
                 .requestMatchers("/**").hasRole("ADMIN")
 
