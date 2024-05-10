@@ -1,5 +1,6 @@
 package com.jornada.socialnetwork.dto.response;
 
+import com.jornada.socialnetwork.dto.request.UsuarioContatoDTO;
 import com.jornada.socialnetwork.entity.PermissaoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,8 +13,8 @@ public class UsuarioResponseDTO {
     private Long idUsuario;
     private String email;
     private String nome;
-//    private Set<PermissaoEntity> permissoes;
     private Set<HabilidadeUsuarioResponseDTO> habilidades;
+    private Set<UsuarioContatoDTO> contatos;
     private String token;
     private String fotoPerfil;
 

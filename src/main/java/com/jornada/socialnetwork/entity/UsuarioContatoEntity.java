@@ -12,7 +12,7 @@ public class UsuarioContatoEntity {
     @EmbeddedId
     private UsuarioContatoPK pk;
     private String descricao;
-    private Boolean publico;
+    private Boolean visivel;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", insertable = false, updatable = false)

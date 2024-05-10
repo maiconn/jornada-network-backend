@@ -1,11 +1,13 @@
 package com.jornada.socialnetwork.service;
 
+import com.jornada.socialnetwork.dto.request.ContatosNovoUsuarioRequestDTO;
 import com.jornada.socialnetwork.dto.request.DadosPessoaisNovoUsuarioRequestDTO;
 import com.jornada.socialnetwork.dto.request.DadosPrincipaisNovoUsuarioRequestDTO;
 import com.jornada.socialnetwork.dto.response.UsuarioResponseDTO;
 import com.jornada.socialnetwork.entity.PermissaoEntity;
 import com.jornada.socialnetwork.entity.UsuarioEntity;
 import com.jornada.socialnetwork.exceptions.BusinessException;
+import com.jornada.socialnetwork.mapper.ContatoMapper;
 import com.jornada.socialnetwork.mapper.HabilidadeMapper;
 import com.jornada.socialnetwork.mapper.UsuarioMapper;
 import com.jornada.socialnetwork.repository.UsuarioRepository;
@@ -21,6 +23,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioMapper usuarioMapper;
     private final HabilidadeMapper habilidadeMapper;
+    private final ContatoMapper contatoMapper;
     private final PasswordEncoder passwordEncoder;
     private final UsuarioAutenticacaoService usuarioAutenticacaoService;
 
@@ -46,9 +49,23 @@ public class UsuarioService {
         usuarioEntity.getHabilidades().clear();
         usuarioEntity.getHabilidades().addAll(habilidadeMapper.toEntityList(dadosPessoais.getHabilidades(), usuarioEntity));
 
+        return saveUserAndReturnCompleteDTO(usuarioEntity);
+    }
+
+    public UsuarioResponseDTO criarContatos(ContatosNovoUsuarioRequestDTO contatos) throws BusinessException {
+        UsuarioEntity usuarioEntity = usuarioAutenticacaoService.retornarUsuarioLogadoEntity();
+
+        usuarioEntity.getContatos().clear();
+        usuarioEntity.getContatos().addAll(contatoMapper.toUsuarioContatoEntity(contatos.getContatos(), usuarioEntity));
+
+        return saveUserAndReturnCompleteDTO(usuarioEntity);
+    }
+
+    private UsuarioResponseDTO saveUserAndReturnCompleteDTO(UsuarioEntity usuarioEntity) {
         usuarioEntity = usuarioRepository.save(usuarioEntity);
         return usuarioMapper.toDtoCompleto(usuarioEntity);
     }
+
 
     private void validarDadosPrincipais(DadosPrincipaisNovoUsuarioRequestDTO novoUsuario) throws BusinessException {
         // se existe um usuário com o mesmo email

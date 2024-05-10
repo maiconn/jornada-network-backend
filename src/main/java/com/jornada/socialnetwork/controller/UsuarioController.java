@@ -1,6 +1,7 @@
 package com.jornada.socialnetwork.controller;
 
 import com.jornada.socialnetwork.dto.AutenticacaoDTO;
+import com.jornada.socialnetwork.dto.request.ContatosNovoUsuarioRequestDTO;
 import com.jornada.socialnetwork.dto.request.DadosPessoaisNovoUsuarioRequestDTO;
 import com.jornada.socialnetwork.dto.request.DadosPrincipaisNovoUsuarioRequestDTO;
 import com.jornada.socialnetwork.dto.response.UsuarioResponseDTO;
@@ -30,5 +31,10 @@ public class UsuarioController {
     @PostMapping("/dados-pessoais")
     public UsuarioResponseDTO criarUsuarioDadosPessoais(@RequestBody DadosPessoaisNovoUsuarioRequestDTO dadosPessoais) throws BusinessException {
         return usuarioService.criarUsuarioDadosPessoais(dadosPessoais);
+    }
+
+    @PostMapping("/contatos")
+    public UsuarioResponseDTO criarContatos(@RequestBody ContatosNovoUsuarioRequestDTO contatos) throws BusinessException {
+        return usuarioService.criarContatos(contatos);
     }
 }
