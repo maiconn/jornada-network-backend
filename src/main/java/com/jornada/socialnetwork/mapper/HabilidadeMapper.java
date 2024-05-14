@@ -1,16 +1,14 @@
 package com.jornada.socialnetwork.mapper;
 
-import com.jornada.socialnetwork.dto.response.ContatoResponseDTO;
 import com.jornada.socialnetwork.dto.response.HabilidadeResponseDTO;
 import com.jornada.socialnetwork.dto.response.HabilidadeUsuarioResponseDTO;
-import com.jornada.socialnetwork.entity.ContatoEntity;
 import com.jornada.socialnetwork.entity.HabilidadeEntity;
 import com.jornada.socialnetwork.entity.UsuarioEntity;
 import com.jornada.socialnetwork.entity.UsuarioHabilidadeEntity;
 import com.jornada.socialnetwork.entity.pk.UsuarioHabilidadePK;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,7 +21,7 @@ public interface HabilidadeMapper {
 
     default Set<UsuarioHabilidadeEntity> toEntityList(List<HabilidadeUsuarioResponseDTO> habilidadeUsuarioResponseDTOS, UsuarioEntity usuario) {
         if(habilidadeUsuarioResponseDTOS == null) {
-            return null;
+            return new HashSet<>();
         }
         return habilidadeUsuarioResponseDTOS.stream()
                 .map((habilidadeUsuarioResponseDTO -> {

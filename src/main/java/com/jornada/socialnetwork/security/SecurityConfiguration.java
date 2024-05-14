@@ -36,11 +36,14 @@ public class SecurityConfiguration {
         http.headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
         http.authorizeHttpRequests((authz) -> authz
 
-                .requestMatchers("/autenticacao/**").permitAll()
-                .requestMatchers("/usuario/**").permitAll()
+                .requestMatchers("/autenticacao").permitAll()
+                .requestMatchers("/usuario/create").permitAll()
 
+                .requestMatchers("/autenticacao/usuario-logado").authenticated()
+                .requestMatchers("/usuario/**").authenticated()
                 .requestMatchers("/habilidade/**").authenticated()
                 .requestMatchers("/contato/**").authenticated()
+                .requestMatchers("/ibge/**").authenticated()
 
 
                 .requestMatchers("/**").hasRole("ADMIN")

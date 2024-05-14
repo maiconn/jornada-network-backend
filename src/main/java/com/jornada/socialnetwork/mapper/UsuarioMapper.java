@@ -10,6 +10,7 @@ import com.jornada.socialnetwork.entity.UsuarioHabilidadeEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.Base64;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -29,6 +30,9 @@ public interface UsuarioMapper {
 
     default UsuarioResponseDTO toDtoCompleto(UsuarioEntity entity) {
         UsuarioResponseDTO responseDTO = toDto(entity);
+        if(entity.getFotoPerfil() != null) {
+            responseDTO.setFotoPerfil(Base64.getEncoder().encodeToString(entity.getFotoPerfil()));
+        }
         responseDTO.setHabilidades(entity.getHabilidades().stream()
                 .map(this::converterHabilidadeEntityParaDTO)
                 .collect(Collectors.toSet()));

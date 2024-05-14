@@ -4,15 +4,14 @@ import com.jornada.socialnetwork.dto.AutenticacaoDTO;
 import com.jornada.socialnetwork.dto.request.ContatosNovoUsuarioRequestDTO;
 import com.jornada.socialnetwork.dto.request.DadosPessoaisNovoUsuarioRequestDTO;
 import com.jornada.socialnetwork.dto.request.DadosPrincipaisNovoUsuarioRequestDTO;
+import com.jornada.socialnetwork.dto.request.LocalizacaoNovoUsuarioRequestDTO;
 import com.jornada.socialnetwork.dto.response.UsuarioResponseDTO;
 import com.jornada.socialnetwork.exceptions.BusinessException;
 import com.jornada.socialnetwork.service.UsuarioAutenticacaoService;
 import com.jornada.socialnetwork.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/usuario")
@@ -28,6 +27,11 @@ public class UsuarioController {
         return autenticar;
     }
 
+    @PostMapping(value = "/upload-foto", consumes = {"multipart/form-data"})
+    public UsuarioResponseDTO atualizarFoto(@ModelAttribute MultipartFile profilePhoto) throws BusinessException {
+        return usuarioService.uploadPhoto(profilePhoto);
+    }
+
     @PostMapping("/dados-pessoais")
     public UsuarioResponseDTO criarUsuarioDadosPessoais(@RequestBody DadosPessoaisNovoUsuarioRequestDTO dadosPessoais) throws BusinessException {
         return usuarioService.criarUsuarioDadosPessoais(dadosPessoais);
@@ -36,5 +40,10 @@ public class UsuarioController {
     @PostMapping("/contatos")
     public UsuarioResponseDTO criarContatos(@RequestBody ContatosNovoUsuarioRequestDTO contatos) throws BusinessException {
         return usuarioService.criarContatos(contatos);
+    }
+
+    @PostMapping("/localizacao")
+    public UsuarioResponseDTO criarLocalizacao(@RequestBody LocalizacaoNovoUsuarioRequestDTO localizacao) throws BusinessException {
+        return usuarioService.criarLocalizacao(localizacao);
     }
 }

@@ -15,7 +15,7 @@ public class HabilidadeEntity {
     @Column(name = "id_habilidade")
     private Long idHabilidade;
     private String descricao;
-    private Boolean ativo;
+    private Boolean ativo = Boolean.TRUE;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "habilidade")
     private Set<UsuarioHabilidadeEntity> usuarios;

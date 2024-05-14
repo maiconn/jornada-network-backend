@@ -17,6 +17,7 @@ public class UsuarioResponseDTO {
     private Set<UsuarioContatoDTO> contatos;
     private String token;
     private String fotoPerfil;
-
     private String bio;
+    private Integer idCidade;
+    private Integer idEstado;
 }
