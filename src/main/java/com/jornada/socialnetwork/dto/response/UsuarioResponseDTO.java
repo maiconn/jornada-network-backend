@@ -2,6 +2,7 @@ package com.jornada.socialnetwork.dto.response;
 
 import com.jornada.socialnetwork.dto.request.UsuarioContatoDTO;
 import com.jornada.socialnetwork.entity.PermissaoEntity;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,4 +21,8 @@ public class UsuarioResponseDTO {
     private String bio;
     private Integer idCidade;
     private Integer idEstado;
+    private String usuario;
+    private Long qtdSeguindo;
+    private Long qtdSeguidores;
+    private Long qtdPostagens;
 }
