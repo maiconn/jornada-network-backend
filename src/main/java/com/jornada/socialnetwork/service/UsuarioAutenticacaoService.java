@@ -122,7 +122,7 @@ public class UsuarioAutenticacaoService {
 
     public UsuarioResponseDTO retornarUsuarioLogado() throws BusinessException {
         UsuarioEntity entity = retornarUsuarioLogadoEntity();
-        return mapper.toDto(entity);
+        return mapper.toDtoCompleto(entity);
     }
 
     public UsuarioEntity retornarUsuarioLogadoEntity() throws BusinessException {
