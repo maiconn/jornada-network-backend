@@ -1,9 +1,6 @@
 package com.jornada.socialnetwork.service;
 
-import com.jornada.socialnetwork.dto.request.ContatosNovoUsuarioRequestDTO;
-import com.jornada.socialnetwork.dto.request.DadosPessoaisNovoUsuarioRequestDTO;
-import com.jornada.socialnetwork.dto.request.DadosPrincipaisNovoUsuarioRequestDTO;
-import com.jornada.socialnetwork.dto.request.LocalizacaoNovoUsuarioRequestDTO;
+import com.jornada.socialnetwork.dto.request.*;
 import com.jornada.socialnetwork.dto.response.HabilidadeUsuarioResponseDTO;
 import com.jornada.socialnetwork.dto.response.UsuarioResponseDTO;
 import com.jornada.socialnetwork.entity.HabilidadeEntity;
@@ -22,8 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +35,7 @@ public class UsuarioService {
     private final UsuarioAutenticacaoService usuarioAutenticacaoService;
 
     public UsuarioResponseDTO criarUsuarioDadosPrincipais(DadosPrincipaisNovoUsuarioRequestDTO novoUsuario) throws BusinessException {
-        validarDadosPrincipais(novoUsuario);
+        validarDados(novoUsuario, null);
 
         UsuarioEntity novo = usuarioMapper.toEntity(novoUsuario);
         novo.setSenha(passwordEncoder.encode(novoUsuario.getSenha()));
@@ -62,9 +59,14 @@ public class UsuarioService {
         UsuarioEntity usuarioEntity = usuarioAutenticacaoService.retornarUsuarioLogadoEntity();
         usuarioEntity.setBio(dadosPessoais.getBio());
 
+        atualizarHabilidades(dadosPessoais.getHabilidades(), usuarioEntity);
+
+        return saveUserAndReturnCompleteDTO(usuarioEntity);
+    }
+
+    private void atualizarHabilidades(Set<HabilidadeUsuarioResponseDTO> habilidades, UsuarioEntity usuarioEntity) {
         usuarioEntity.getHabilidades().clear();
 
-        List<HabilidadeUsuarioResponseDTO> habilidades = dadosPessoais.getHabilidades();
         habilidades.forEach(habilidadeUsuarioResponseDTO -> {
             String descricao = habilidadeUsuarioResponseDTO.getDescricao().toUpperCase();
             Optional<HabilidadeEntity> habilidadeBuscada = habilidadeService.findHabilidadeByDescricao(descricao);
@@ -80,8 +82,6 @@ public class UsuarioService {
         });
 
         usuarioEntity.getHabilidades().addAll(habilidadeMapper.toEntityList(habilidades, usuarioEntity));
-
-        return saveUserAndReturnCompleteDTO(usuarioEntity);
     }
 
     public UsuarioResponseDTO criarLocalizacao(LocalizacaoNovoUsuarioRequestDTO localizacao) throws BusinessException {
@@ -94,10 +94,14 @@ public class UsuarioService {
     public UsuarioResponseDTO criarContatos(ContatosNovoUsuarioRequestDTO contatos) throws BusinessException {
         UsuarioEntity usuarioEntity = usuarioAutenticacaoService.retornarUsuarioLogadoEntity();
 
-        usuarioEntity.getContatos().clear();
-        usuarioEntity.getContatos().addAll(contatoMapper.toUsuarioContatoEntity(contatos.getContatos(), usuarioEntity));
+        atualizarContatos(contatos.getContatos(), usuarioEntity);
 
         return saveUserAndReturnCompleteDTO(usuarioEntity);
+    }
+
+    private void atualizarContatos(Set<UsuarioContatoDTO> contatos, UsuarioEntity usuarioEntity) {
+        usuarioEntity.getContatos().clear();
+        usuarioEntity.getContatos().addAll(contatoMapper.toUsuarioContatoEntity(contatos, usuarioEntity));
     }
 
     private byte[] getBytes(MultipartFile profilePhoto) {
@@ -116,17 +120,8 @@ public class UsuarioService {
         return usuarioMapper.toDtoCompleto(usuarioEntity);
     }
 
-
-    private void validarDadosPrincipais(DadosPrincipaisNovoUsuarioRequestDTO novoUsuario) throws BusinessException {
-        // se existe um usuário com o mesmo email
-        if (usuarioRepository.existsByUsuario(novoUsuario.getUsuario())) {
-            throw new BusinessException("Já existe um usuário cadastrado com esse user '" + novoUsuario.getUsuario() + "'");
-        }
-
-        // se o nome de usuário já existe
-        if (usuarioRepository.existsByEmail(novoUsuario.getEmail())) {
-            throw new BusinessException("Já existe um usuário cadastrado com esse e-mail '" + novoUsuario.getEmail() + "'");
-        }
+    private void validarDados(DadosPrincipaisNovoUsuarioRequestDTO novoUsuario, Long idUsuario) throws BusinessException {
+        validarNomeUsuarioEEmail(novoUsuario.getUsuario(),novoUsuario.getEmail(), idUsuario);
 
         // validação da senha
         String senha = novoUsuario.getSenha();
@@ -143,5 +138,47 @@ public class UsuarioService {
         }
     }
 
+    private void validarNomeUsuarioEEmail(String nomeUsuario, String email, Long idUsuario) throws BusinessException {
+        String mensagemUsuario = "Já existe um usuário cadastrado com esse user '" + nomeUsuario + "'";
+        String mensagemEmail = "Já existe um usuário cadastrado com esse e-mail '" + email + "'";
+        if(idUsuario == null) {
+            // se existe um usuário com o mesmo nome de usuário
+            if (usuarioRepository.existsByUsuario(nomeUsuario)) {
+                throw new BusinessException(mensagemUsuario);
+            }
+            if (usuarioRepository.existsByEmail(email)) {
+                throw new BusinessException(mensagemEmail);
+            }
+        } else {
+            if (usuarioRepository.existsByUsuarioAndIdUsuarioNot(nomeUsuario, idUsuario)) {
+                throw new BusinessException(mensagemUsuario);
+            }
+            if (usuarioRepository.existsByEmailAndIdUsuarioNot(email, idUsuario)) {
+                throw new BusinessException(mensagemEmail);
+            }
+        }
+    }
 
+    public UsuarioResponseDTO atualizarUsuario(AtualizacaoUsuarioDTO atualizacaoUsuarioDTO) throws BusinessException {
+        UsuarioEntity usuarioEntity = usuarioAutenticacaoService.retornarUsuarioLogadoEntity();
+        validarDados(usuarioMapper.transformarAtualizacaoParaNovoUsuario(atualizacaoUsuarioDTO), usuarioEntity.getIdUsuario());
+
+        usuarioEntity.setEmail(atualizacaoUsuarioDTO.getEmail());
+        usuarioEntity.setNome(atualizacaoUsuarioDTO.getNome());
+        usuarioEntity.setSenha(passwordEncoder.encode(atualizacaoUsuarioDTO.getSenha()));
+        usuarioEntity.setUsuario(atualizacaoUsuarioDTO.getUsuario());
+        usuarioEntity.setBio(atualizacaoUsuarioDTO.getBio());
+        usuarioEntity.setIdCidade(atualizacaoUsuarioDTO.getIdCidade());
+        usuarioEntity.setIdEstado(atualizacaoUsuarioDTO.getIdEstado());
+        atualizarHabilidades(atualizacaoUsuarioDTO.getHabilidades(), usuarioEntity);
+        atualizarContatos(atualizacaoUsuarioDTO.getContatos(), usuarioEntity);
+
+        return saveUserAndReturnCompleteDTO(usuarioEntity);
+    }
+
+    public UsuarioResponseDTO recuperarUsuarioPorNomeUsuario(String nomeUsuario) throws BusinessException {
+        UsuarioEntity usuarioEntity = usuarioRepository.findByUsuario(nomeUsuario)
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado!"));
+        return usuarioMapper.toDtoCompleto(usuarioEntity);
+    }
 }

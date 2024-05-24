@@ -9,7 +9,6 @@ import com.jornada.socialnetwork.entity.pk.UsuarioHabilidadePK;
 import org.mapstruct.Mapper;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,7 +18,7 @@ public interface HabilidadeMapper {
     HabilidadeResponseDTO toDto(HabilidadeEntity entity);
     HabilidadeEntity toEntity(HabilidadeUsuarioResponseDTO dto);
 
-    default Set<UsuarioHabilidadeEntity> toEntityList(List<HabilidadeUsuarioResponseDTO> habilidadeUsuarioResponseDTOS, UsuarioEntity usuario) {
+    default Set<UsuarioHabilidadeEntity> toEntityList(Set<HabilidadeUsuarioResponseDTO> habilidadeUsuarioResponseDTOS, UsuarioEntity usuario) {
         if(habilidadeUsuarioResponseDTOS == null) {
             return new HashSet<>();
         }

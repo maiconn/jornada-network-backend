@@ -8,4 +8,7 @@ public class UsuarioRequestDTO {
     private String nome;
     private String senha;
     private String confirmarSenha;
+
+    private Integer idCidade;
+    private Integer idEstado;
 }

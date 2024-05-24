@@ -1,5 +1,6 @@
 package com.jornada.socialnetwork.mapper;
 
+import com.jornada.socialnetwork.dto.request.AtualizacaoUsuarioDTO;
 import com.jornada.socialnetwork.dto.request.DadosPrincipaisNovoUsuarioRequestDTO;
 import com.jornada.socialnetwork.dto.request.UsuarioContatoDTO;
 import com.jornada.socialnetwork.dto.response.HabilidadeUsuarioResponseDTO;
@@ -26,6 +27,8 @@ public interface UsuarioMapper {
     @Mapping(source = "contato.descricao", target = "descricaoContato")
     @Mapping(source = "contato.idContato", target = "idContato")
     UsuarioContatoDTO converterContatoEntityParaDTO(UsuarioContatoEntity contato);
+
+    DadosPrincipaisNovoUsuarioRequestDTO transformarAtualizacaoParaNovoUsuario(AtualizacaoUsuarioDTO dto);
 
 
     default UsuarioResponseDTO toDtoCompleto(UsuarioEntity entity) {

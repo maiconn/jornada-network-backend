@@ -12,5 +12,7 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
     @EntityGraph(attributePaths = {"permissoes"})
     Optional<UsuarioEntity> findByUsuario(String usuario);
     Boolean existsByUsuario(String usuario);
+    Boolean existsByUsuarioAndIdUsuarioNot(String usuario, Long idUsuario);
+    Boolean existsByEmailAndIdUsuarioNot(String email, Long idUsuario);
     Boolean existsByEmail(String email);
 }

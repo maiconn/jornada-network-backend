@@ -1,10 +1,7 @@
 package com.jornada.socialnetwork.controller;
 
 import com.jornada.socialnetwork.dto.AutenticacaoDTO;
-import com.jornada.socialnetwork.dto.request.ContatosNovoUsuarioRequestDTO;
-import com.jornada.socialnetwork.dto.request.DadosPessoaisNovoUsuarioRequestDTO;
-import com.jornada.socialnetwork.dto.request.DadosPrincipaisNovoUsuarioRequestDTO;
-import com.jornada.socialnetwork.dto.request.LocalizacaoNovoUsuarioRequestDTO;
+import com.jornada.socialnetwork.dto.request.*;
 import com.jornada.socialnetwork.dto.response.UsuarioResponseDTO;
 import com.jornada.socialnetwork.exceptions.BusinessException;
 import com.jornada.socialnetwork.service.UsuarioAutenticacaoService;
@@ -45,5 +42,15 @@ public class UsuarioController {
     @PostMapping("/localizacao")
     public UsuarioResponseDTO criarLocalizacao(@RequestBody LocalizacaoNovoUsuarioRequestDTO localizacao) throws BusinessException {
         return usuarioService.criarLocalizacao(localizacao);
+    }
+
+    @PutMapping
+    public UsuarioResponseDTO atualizarUsuario(@RequestBody AtualizacaoUsuarioDTO atualizacaoUsuarioDTO) throws BusinessException  {
+        return usuarioService.atualizarUsuario(atualizacaoUsuarioDTO);
+    }
+
+    @GetMapping("/perfil/{usuario}")
+    public UsuarioResponseDTO recuperarUsuarioPorNomeUsuario(@PathVariable("usuario") String nomeUsuario) throws BusinessException {
+        return usuarioService.recuperarUsuarioPorNomeUsuario(nomeUsuario);
     }
 }
